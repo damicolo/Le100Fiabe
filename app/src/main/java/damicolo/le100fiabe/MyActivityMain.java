@@ -19,12 +19,12 @@ public class MyActivityMain extends Activity {
 
         TabHost.TabSpec tabSpec = tabHost.newTabSpec("tab1");
         tabSpec.setContent(R.id.myTab1);
-        tabSpec.setIndicator("My Tab 1");
+        tabSpec.setIndicator("Fiabe");
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("tab2");
         tabSpec.setContent(R.id.myTab2);
-        tabSpec.setIndicator("My Tab 2 Damicolo");
+        tabSpec.setIndicator("Zecchino");
         tabHost.addTab(tabSpec);
 
 
