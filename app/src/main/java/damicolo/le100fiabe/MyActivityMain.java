@@ -1,13 +1,24 @@
 package damicolo.le100fiabe;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
 
+import org.apache.http.util.ByteArrayBuffer;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
 
 public class MyActivityMain extends Activity {
+
+    String myURL = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +38,6 @@ public class MyActivityMain extends Activity {
         tabSpec.setIndicator("Zecchino");
         tabHost.addTab(tabSpec);
 
-
-
     }
 
 
@@ -40,6 +49,14 @@ public class MyActivityMain extends Activity {
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+        new RetrieveSongsList().execute();
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -49,5 +66,42 @@ public class MyActivityMain extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class RetrieveSongsList extends AsyncTask<Void, Void, String> {
+
+        private Exception exception;
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                URL url = new URL("http://damicolo1.cloudapp.net/policy/Le.100.Fiabe.txt" ); //you can write here any link
+                //Open a connection to that URL.//
+                URLConnection urlConnection;
+                urlConnection = url.openConnection();
+                //Define InputStreams to read from the URLConnection.
+                InputStream is = urlConnection.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(is);
+                //Read bytes to the Buffer until there is nothing more to read(-1).
+                ByteArrayBuffer baf = new ByteArrayBuffer(50);
+                int current = 0;
+                while ((current = bis.read()) != -1) {
+                    baf.append((byte) current);
+                }
+                String s = new String(baf.toByteArray(), "UTF-8");
+                Log.d("ImageManager", "String: " + s);
+                return  s;
+
+            } catch (Exception e) {
+                Log.d("ImageManager", "Error: " + e);
+            }
+            return "";
+        }
+
+        protected void onPostExecute(String list) {
+            // TODO: check this.exception
+            // TODO: do something with the feed
+            myURL = list;
+        }
     }
 }
